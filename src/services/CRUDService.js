@@ -6,7 +6,6 @@ import sequelize from 'sequelize';
 const salt = bcrypt.genSaltSync(10);
 
 let createNewUser = async (data) => {
-    console.log(data)
     return new Promise(async(resolve,render) => {
         try {
         let hashPasswordFromBcrypt = await hashUserPassword(data.password);
