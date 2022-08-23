@@ -3,21 +3,21 @@ import bcrypt from 'bcryptjs';
 
 const salt = bcrypt.genSaltSync(10);
 let hashUserPassword = (password) => {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
-       let hashPassword = await bcrypt.hashSync(password, salt)
+            let hashPassword = await bcrypt.hashSync(password, salt)
             resolve(hashPassword)
-         }
+        }
         catch (e) {
             reject(e)
         }
-        
+
     })
 }
 
 
-let handleUserLogin = (email, password)=> {
-    return new Promise(async(resolve, reject) => {
+let handleUserLogin = (email, password) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let userData = {};
             let isExist = await checkUserEmail(email);
@@ -25,48 +25,48 @@ let handleUserLogin = (email, password)=> {
                 let user = await db.User.findOne({
                     where: { email: email },
                     attributes: ['email', 'roleId', 'password'],
-                    raw:true,
+                    raw: true,
                 });
                 if (user) {
-                    
-                    let checkPassword = await bcrypt.compareSync(password, user.password); 
+
+                    let checkPassword = await bcrypt.compareSync(password, user.password);
                     if (checkPassword) {
                         userData.errCode = 0;
                         userData.errMessage = 'OK';
-                        
-            
+
+
                         delete user.password;
                         userData.user = user;
                     }
                     else {
                         userData.errCode = 3;
                         userData.errMessage = 'Password co van de';
-                       
+
                     }
                 }
                 else {
                     userData.errCode = 2;
                     userData.errMessage = 'User ko ton tai ';
-                   
+
                 }
             }
             else {
                 userData.errCode = 1;
                 userData.errMessage = 'Email ko ton tai thu email khac';
-               
+
             }
             resolve(userData);
         }
         catch (e) {
             reject(e);
         }
- })
+    })
 }
 let checkUserEmail = (userEmail) => {
-    return new Promise(async(resolve, reject) => {
-        try { 
+    return new Promise(async (resolve, reject) => {
+        try {
             let user = await db.User.findOne({
-                where: { email : userEmail}
+                where: { email: userEmail }
             })
             if (user) {
                 resolve(true)
@@ -81,8 +81,8 @@ let checkUserEmail = (userEmail) => {
     })
 }
 let getAllUsers = (userId) => {
-    return new Promise(async(resolve, reject) => {
-        try { 
+    return new Promise(async (resolve, reject) => {
+        try {
             let users = '';
             if (userId === 'ALL') {
                 users = await db.User.findAll({
@@ -90,16 +90,16 @@ let getAllUsers = (userId) => {
                         exclude: ['password']
                     }
                 });
-             
+
             }
-            if(userId && userId !=='ALL') {
+            if (userId && userId !== 'ALL') {
                 users = await db.User.findOne({
                     where: { id: userId },
                     attributes: {
                         exclude: ['password']
                     }
                 });
-                
+
             }
             resolve(users);
         }
@@ -109,32 +109,35 @@ let getAllUsers = (userId) => {
     })
 }
 let createNewUser = (data) => {
-    return new Promise(async(resolve, reject) => {
-        try { 
+    return new Promise(async (resolve, reject) => {
+        try {
             //check email co ton tai ko 
             let check = await checkUserEmail(data.email);
             if (check) {
                 resolve({
                     errCode: 1,
-                    message: "Da ton tai email tu truoc"
+                    errMessage: "Da ton tai email tu truoc"
                 })
             }
-            let hashPasswordFromBcrypt = await hashUserPassword(data.password);
-            await db.User.create({
-                email: data.email,
-                password:hashPasswordFromBcrypt,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                address: data.address,
-                gender: data.gender==='1'? true:false,
-                phonenumber: data.phonenumber,
-                roleId: data.roleId,
-            })
-            resolve({
-                errCode: 0,
-                message: 'OK',
+            else {
+                let hashPasswordFromBcrypt = await hashUserPassword(data.password);
+                await db.User.create({
+                    email: data.email,
+                    password: hashPasswordFromBcrypt,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    address: data.address,
+                    gender: data.gender === '1' ? true : false,
+                    phonenumber: data.phonenumber,
+                    roleId: data.roleId,
+                })
+                resolve({
+                    errCode: 0,
+                    message: 'OK',
 
-            });
+                });
+            }
+
         }
         catch (e) {
             reject(e);
@@ -143,36 +146,73 @@ let createNewUser = (data) => {
 }
 
 let deleteUser = (userId) => {
-   return new Promise(async(resolve, reject) => {
-    try {
-       let user = await db.User.findOne({
-           where: { id: userId }
-       })
-        
-       if (!user) {
-           resolve({
-               errCode: 2,
-               errMessage: 'nguoi dung ko ton tai tren data base'
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { id: userId }
             })
+
+            if (!user) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'nguoi dung ko ton tai tren data base'
+                })
+            }
+            await db.User.destroy({
+                where: { id: userId }
+            })
+
+            resolve({
+                errCode: 0,
+                errMessage: 'nguoi dung da bi xoa'
+            });
+
         }
-        await db.User.destroy({
-            where : { id: userId }
-        })
-            
-        resolve({
-            errCode: 0,
-            errMessage: 'nguoi dung da bi xoa'
-        });
-        
-    }
-    catch (e) {
-        reject(e);
-    }
-   })
+        catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let updateUserData = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.id) {
+                console.log('check nodejs', data)
+                resolve({
+                    errCode: 2,
+                    errMessage: "ko co yeu cau j ca"
+                })
+            }
+            let user = await db.User.findOne({
+                where: { id: data.id },
+                raw: false
+            })
+            if (user) {
+                user.firstName = data.firstName,
+                    user.lastName = data.lastName,
+                    user.address = data.address,
+                    await user.save();
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Update thanh cong nguoi dung'
+                });
+            }
+            else {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Ko co nguoi dung'
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
 }
 module.exports = {
     handleUserLogin,
     getAllUsers,
     createNewUser,
     deleteUser,
+    updateUserData,
 }

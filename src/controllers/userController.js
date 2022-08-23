@@ -54,15 +54,17 @@ let handleDeleteUser = async (req, res) => {
     if (!req.body.id) {
         res.status(200).json({
             errCode: 1,
-            message: "Loi thieu id de xoa"
+            errMessage: "Loi thieu id de xoa"
         });
     }
     let message = await userServicde.deleteUser(req.body.id);
     return res.status(200).json(message);
 }
 
-let handleEditUser = () => {
-    
+let handleEditUser = async(req, res) => {
+    let data = req.body;
+    let message =await userServicde.updateUserData(data);
+    return res.status(200).json(message)
 }
 module.exports = {
     handleLogin,
