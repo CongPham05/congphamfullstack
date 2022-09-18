@@ -12,7 +12,7 @@ module.exports = {
       typeRole: 'ROLE',
       keyRole: 'R1',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }]);
   },
 
