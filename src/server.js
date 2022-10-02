@@ -29,8 +29,10 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "1000000000mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "1000000000mb", extended: true }));
 
 viewEngine(app);
 initWebRouters(app);
@@ -39,5 +41,5 @@ connectDB();
 
 let port = process.env.PORT || 6969;
 app.listen(port, () => {
-    console.log("hihi"+ port)
+    console.log("hihi" + port)
 })

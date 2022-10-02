@@ -1,4 +1,6 @@
 import userService from '../services/userService'
+
+
 let handleLogin = async (req, res) => {
 
     let email = req.body.email;
@@ -23,7 +25,6 @@ let handleLogin = async (req, res) => {
 
         })
 }
-
 let handleGetAllUsers = async (req, res) => {
     let id = req.query.id; //All, id
 
@@ -42,12 +43,10 @@ let handleGetAllUsers = async (req, res) => {
         users
     })
 }
-
 let handleCreateNewUser = async (req, res) => {
     let message = await userService.createNewUser(req.body);
     return res.status(200).json(message);
 }
-
 let handleDeleteUser = async (req, res) => {
     if (!req.body.id) {
         res.status(200).json({
@@ -58,7 +57,6 @@ let handleDeleteUser = async (req, res) => {
     let message = await userService.deleteUser(req.body.id);
     return res.status(200).json(message);
 }
-
 let handleEditUser = async (req, res) => {
     let data = req.body;
     let message = await userService.updateUserData(data);

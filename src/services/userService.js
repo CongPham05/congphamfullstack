@@ -1,7 +1,9 @@
 import db from '../models/index';
 import bcrypt from 'bcryptjs';
 
+
 const salt = bcrypt.genSaltSync(10);
+
 let hashUserPassword = (password) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -14,8 +16,6 @@ let hashUserPassword = (password) => {
 
     })
 }
-
-
 let handleUserLogin = (email, password) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -130,7 +130,8 @@ let createNewUser = (data) => {
                     gender: data.gender,
                     phonenumber: data.phonenumber,
                     roleId: data.roleId,
-                    positionId: data.positionId
+                    positionId: data.positionId,
+                    image: data.avatar
                 })
                 resolve({
                     errCode: 0,
@@ -145,7 +146,6 @@ let createNewUser = (data) => {
         }
     })
 }
-
 let deleteUser = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -174,15 +174,14 @@ let deleteUser = (userId) => {
         }
     })
 }
-
 let updateUserData = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.id) {
+            if (!data.id || !data.roleId || !data.positionId || !data.gender) {
                 console.log('check nodejs', data)
                 resolve({
                     errCode: 2,
-                    errMessage: "ko co yeu cau j ca"
+                    errMessage: "Missing required parameters"
                 })
             }
             let user = await db.User.findOne({
@@ -190,10 +189,18 @@ let updateUserData = (data) => {
                 raw: false
             })
             if (user) {
-                user.firstName = data.firstName,
-                    user.lastName = data.lastName,
-                    user.address = data.address,
-                    await user.save();
+                user.firstName = data.firstName;
+                user.lastName = data.lastName;
+                user.address = data.address;
+                user.roleId = data.roleId;
+                user.positionId = data.positionId;
+                user.gender = data.gender;
+                user.phonenumber = data.phonenumber;
+                if (data.avatar) {
+                    user.image = data.avatar
+
+                }
+                await user.save();
                 resolve({
                     errCode: 0,
                     errMessage: 'Update thanh cong nguoi dung'
@@ -235,6 +242,8 @@ let getAllCodeService = (typeInput) => {
         }
     })
 }
+
+
 module.exports = {
     handleUserLogin,
     getAllUsers,
