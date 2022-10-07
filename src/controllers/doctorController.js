@@ -10,11 +10,27 @@ let getTopDoctorHome = async (req, res) => {
         console.log(e)
         return res.status(200).json({
             errCode: -1,
-            message: 'Error from Server...',
+            errMessage: 'Error from Server...',
+        })
+    }
+}
+let getAllDoctors = async (req, res) => {
+    try {
+        let doctors = await doctorService.getAllDoctors();
+        return res.status(200).json(doctors)
+
+    } catch (e) {
+        console.log(e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Loi tu Server..."
         })
     }
 }
 
+
 module.exports = {
     getTopDoctorHome,
+    getAllDoctors
+
 }
