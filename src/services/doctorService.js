@@ -48,14 +48,41 @@ let getAllDoctors = () => {
                 errCode: 0,
                 data: doctors
             })
-
-        } catch (e) {
-            reject(e);
+        } catch (error) {
+            reject(error);
         }
     })
 }
 
+let postInforDoctor = (inputData) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown) {
+                resolve({
+                    errCode: -1,
+                    errMessage: "Loi thieu thong tin bat buoc..."
+                })
+            }
+            else {
+                await db.Markdown.create({
+                    contentHTML: inputData.contentHTML,
+                    contentMarkdown: inputData.contentMarkdown,
+                    description: inputData.description,
+                    doctorId: inputData.doctorId
+                })
+            }
+            resolve({
+                errCode: 0,
+                errMessage: "Luu thanh cong thong tin bac si..."
+            })
+
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 module.exports = {
     getTopDoctorHome,
-    getAllDoctors
+    getAllDoctors,
+    postInforDoctor,
 }

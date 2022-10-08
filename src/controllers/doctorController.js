@@ -19,18 +19,31 @@ let getAllDoctors = async (req, res) => {
         let doctors = await doctorService.getAllDoctors();
         return res.status(200).json(doctors)
 
-    } catch (e) {
-        console.log(e)
+    } catch (error) {
+        console.log(error)
         return res.status(200).json({
             errCode: -1,
-            errMessage: "Loi tu Server..."
+            errMessage: 'Loi den tu server...'
         })
     }
 }
+let postInforDoctor = async (req, res) => {
+    try {
+        let response = await doctorService.postInforDoctor(req.body);
+        return res.status(200).json(response);
 
-
+    } catch (error) {
+        console.log(error)
+        return res.status(200)
+            .json({
+                errCode: -1,
+                errMessage: "Loi den tu server postInforDoctor..."
+            })
+    }
+}
 module.exports = {
     getTopDoctorHome,
-    getAllDoctors
+    getAllDoctors,
+    postInforDoctor
 
 }

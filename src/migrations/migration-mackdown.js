@@ -1,35 +1,35 @@
 'use strict';
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.createTable('markdown', {
+        await queryInterface.createTable('markdowns', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            contenHTML: {
+            contentHTML: {
                 allowNull: false,
                 type: Sequelize.TEXT('long')
             },
-            contenMardown: {
+            contentMarkdown: {
                 allowNull: false,
                 type: Sequelize.TEXT('long')
             },
-            desscription: {
+            description: {
                 allowNull: true,
                 type: Sequelize.TEXT('long')
             },
             doctorId: {
-                allowNull: false,
+                allowNull: true,
                 type: Sequelize.INTEGER
             },
             specialtyId: {
-                allowNull: false,
+                allowNull: true,
                 type: Sequelize.INTEGER
             },
             clinicId: {
-                allowNull: false,
+                allowNull: true,
                 type: Sequelize.INTEGER
             },
             createdAt: {
