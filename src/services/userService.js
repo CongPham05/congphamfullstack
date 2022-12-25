@@ -178,7 +178,7 @@ let updateUserData = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!data.id || !data.roleId || !data.positionId || !data.gender) {
-                console.log('check nodejs', data)
+
                 resolve({
                     errCode: 2,
                     errMessage: "Missing required parameters"

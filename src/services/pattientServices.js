@@ -11,7 +11,7 @@ let buildUrlEmail = (doctorId, token) => {
 let postBookAppoinment = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(data);
+
             if (!data.email
                 || !data.doctorId || !data.timeType
                 || !data.date || !data.fullName

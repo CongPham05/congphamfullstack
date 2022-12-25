@@ -104,12 +104,12 @@ let sendAttachment = async (dataSend) => {
             // send mail with defined transport object
             let info = await transporter.sendMail({
                 from: '"Tao la Hacker 👻" <congphamvan115@gmail.com>', // sender address
-                to: dataSend.reciverEmail, // list of receivers
+                to: dataSend.email, // list of receivers
                 subject: "Thông tin đặt lịch khám bệnh", // Subject line
-                html: getBodyHTMLEmail(dataSend),
+                html: getBodyHTMLEmailRemedy(dataSend),
                 attachments: [
                     {
-                        filename: `remedy-${dataSend.patientId}-${new Date().getTime()}.pnp`,
+                        filename: `remedy-${dataSend.patientId}-${new Date().getTime()}.png`,
                         content: dataSend.imgBase64.split('base64,')[1],
                         encoding: 'base64'
                     }

@@ -462,15 +462,18 @@ let sendRemedy = (data) => {
                     raw: false
                 })
                 if (appointment) {
+
                     appointment.statusId = 'S3';
                     await appointment.save();
                 }
-                await emailService.sendAttachment(data);
 
+                //send email remedy
+                await emailService.sendAttachment(data);
                 resolve({
                     errCode: 0,
                     errMessage: 'OK . . .'
                 })
+
             }
         } catch (error) {
             reject(error);
