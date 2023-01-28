@@ -127,7 +127,7 @@ let sendRemedy = async (req, res) => {
 
 
         let infor = await doctorService.sendRemedy(req.body);
-        console.log("check data send 0005:", req.body)
+
         return res.status(200).json(infor)
 
     } catch (error) {
